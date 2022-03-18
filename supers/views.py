@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Super
+from .models import Super,Power
 from super_types.models import Super_Type
-from .serializers import SuperSerializer
+from .serializers import SuperSerializer,PowerSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
@@ -53,3 +53,21 @@ def super_detail(request,pk):
     elif request.method == 'DELETE':
         super.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+
+@api_view(['PATCH'])
+def power_patch(request,pk,id):
+    super = get_object_or_404(Super,pk = pk) #access particular super by pk
+    power = get_object_or_404(Power,id = id) #access particular power by id
+    super.powers.add(power)
+    serializer = SuperSerializer(super,data=request.data,partial = True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
+    
+#power model has name property. it is registered with seeded values. primary and secondary ability have 
+#been replaced with a powers manytomanyfield 
+#create a patch endpoint -> urls now has path('<int:pk>/power/',views.power_patch)
+#http://127.0.0.1:8000/supers/1/telekinesis
+#what does pk = pk do even? 
+#how does the serializer change? do i need to change the fields to be displayed?
+#
