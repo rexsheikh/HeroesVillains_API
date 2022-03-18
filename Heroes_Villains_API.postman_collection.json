@@ -206,6 +206,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Power_Patch",
+					"request": {
+						"method": "PATCH",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
