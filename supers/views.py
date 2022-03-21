@@ -108,5 +108,3 @@ def power_compare(request):
 #to perform the action requested in need to query the junction table and count how many times the 
 #particular superid comes up. 
 #retrieve id from the query param. use powers.filter(id).count() to compare and return the custom object 
-
-#visit urls...unsure what to pass in as parameters here

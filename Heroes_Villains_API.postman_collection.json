@@ -214,6 +214,41 @@
 						"header": []
 					},
 					"response": []
+				},
+				{
+					"name": "Get_Power_Winner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/supers/compare/?hero=Christopher&villain=Joker",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"supers",
+								"compare",
+								""
+							],
+							"query": [
+								{
+									"key": "hero",
+									"value": "Christopher"
+								},
+								{
+									"key": "villain",
+									"value": "Joker"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
