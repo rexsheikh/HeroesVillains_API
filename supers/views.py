@@ -1,3 +1,5 @@
+from unicodedata import name
+from urllib import response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Super,Power
@@ -63,11 +65,48 @@ def power_patch(request,pk,id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def power_compare(request):
+    custom_response_dict = {}
+    powers = Power.objects.all()
+    hero_param = request.query_params.get('hero')
+    villain_param = request.query_params.get('villain')
+    hero = get_object_or_404(Super,name = hero_param) 
+    villain = get_object_or_404(Super,name = villain_param)
+    hero_serializer = SuperSerializer(hero)
+    villain_serializer = SuperSerializer(villain)
+   
+
+    if hero.super_type.type == villain.super_type.type:
+        return Response('Enter a hero and villain')
+    else:
+        hero_power_count =  powers.filter(super__id = hero.id).count()
+        villain_power_count = powers.filter(super__id = villain.id).count()
+        if hero_power_count > villain_power_count:
+            custom_response_dict['winner'] = hero_serializer.data
+            custom_response_dict['loser'] = villain_serializer.data
+            
+        elif hero_power_count < villain_power_count:
+            custom_response_dict['winner'] = villain_serializer.data
+            custom_response_dict['loser'] = hero_serializer.data
+        else:
+            custom_response_dict['tie'] = villain_serializer.data,hero_serializer.data
+
+    return Response(custom_response_dict)
+
+
     
-#power model has name property. it is registered with seeded values. primary and secondary ability have 
-#been replaced with a powers manytomanyfield 
-#create a patch endpoint -> urls now has path('<int:pk>/power/',views.power_patch)
-#http://127.0.0.1:8000/supers/1/telekinesis
-#what does pk = pk do even? 
-#how does the serializer change? do i need to change the fields to be displayed?
-#
+#create an enpoint that allows you to pass in a hero name and villain as query params
+#query for each of the submitted supers and compare their number of powers. 
+#whoever has more powers listed is the winner 
+#send back a custom object response that cotains a winner key containing the winner's info
+#and a loser key containing the loser's infor, or a different message if it 
+#is a tie.
+
+#I retrieved the hero/villain objects and made sure they were of the appropriate type. 
+#to perform the action requested in need to query the junction table and count how many times the 
+#particular superid comes up. 
+#retrieve id from the query param. use powers.filter(id).count() to compare and return the custom object 
+
+#visit urls...unsure what to pass in as parameters here
